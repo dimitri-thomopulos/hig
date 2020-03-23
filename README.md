@@ -6,7 +6,7 @@ http://www.mercatoelettrico.org/.
 A bash script is available among the provided files in order to download 
 authomatically 
 and in the right forlder the files with price data (An equivalent batch script 
-for Windows will soon be available.). It is sufficient to execute it, however 
+for Windows will soon be available). It is sufficient to execute it, however 
 the Users should convert the excel files into semicolon separated CSV files.
 The necessary spreadsheet is "Prezzi-Prices".
 To install the genearator on any Linux O.S. it is sufficient to run " make ".

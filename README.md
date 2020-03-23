@@ -13,9 +13,15 @@ To install the genearator on any Linux O.S. it is sufficient to run " make ".
 Then to execute it is sufficient to run " ./HIG " and follow the instructions.
 
 Instructions for Linux O.S.:
+
 	1 Execute "chmod +x getPrices.sh"
+	
 	2 Execute "./getPrices.sh" ;
+	
 	3 Convert the .xls files in semicolon separated .csv files
+	
 	4 Execute "make"
+	
 	5 Execute "./HIG"
+	
 	6 Enjoy creating instances

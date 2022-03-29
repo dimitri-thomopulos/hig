@@ -26,7 +26,7 @@
  * @brief    :Functions for writing the instances
  * @author   :Dimitri Thomopulos
  * @date     :20180730
- * @version  :1.01
+ * @version  :1.02
  */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -173,8 +173,13 @@ int write_instance(int instFormat, int year, int month, int day,
 	//V volumes
 	double *vValues = new double[RVol + 1];
 	vValues[0] = v_min;
-	for (int j = 0; j < RVol; j++){
-		vValues[j + 1] = ((v_max - v_min)*j / (RVol - 1)) + v_min;
+	if (RVol > 1){
+		for (int j = 0; j < RVol; j++){
+			vValues[j + 1] = ((v_max - v_min)*j / (RVol - 1)) + v_min;
+		}
+	}
+	else{
+		vValues[1] = v_max;
 	}
 
 	//Writing the instance

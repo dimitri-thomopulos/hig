@@ -321,7 +321,7 @@ int main(int argc, char** argv){
 
 	//Selecting the extenson of the file instances
 	cout << "Please, select the extesion of the files to generate. "; 
-	cout << "O .dat; 1 .dat .csv; 2.csv.";
+	cout << "0 .dat; 1 .dat .csv; 2.csv.";
 	outExtension = read_value(0, 2, outExtension);
 
 	//Selecting number of instances, i.e., genereting option

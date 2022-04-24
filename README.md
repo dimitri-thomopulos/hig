@@ -9,8 +9,8 @@ authomatically
 and in the right forlder the files with price data (An equivalent batch script 
 for Windows will soon be available). It is sufficient to execute it, however 
 the Users should convert the excel files into semicolon separated CSV files.
-The necessary spreadsheet is "Prezzi-Prices". However, we remind you to accept the terms of use of http://www.mercatoelettrico.org/.
-[TERMS OF USE OF THE “WWW.MERCATOELETTRICO.ORG” WEBSITE](https://www.mercatoelettrico.org/En/Tools/Accessodati.aspx?ReturnUrl=%2fEn%2fDownload%2fDownloadDati.aspx%3fval%3dMGP_Prezzi&val=MGP_Prezzi)
+The necessary spreadsheet is "Prezzi-Prices". However, we remind you to accept the [terms of use of http://www.mercatoelettrico.org/].
+(https://www.mercatoelettrico.org/En/Tools/Accessodati.aspx?ReturnUrl=%2fEn%2fDownload%2fDownloadDati.aspx%3fval%3dMGP_Prezzi&val=MGP_Prezzi).
 
 ## Installation
 To install the genearator on any Linux O.S. it is sufficient to run " make ".

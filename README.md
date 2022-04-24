@@ -38,3 +38,19 @@ Instructions for Linux O.S.:
 	5 Execute "./HIG"
 	
 	6 Enjoy creating instances
+	
+## Dependencies
+
+The generator requires price data nad inflow data. The available data go from 2004 to 2012.
+
+The price data format was already introduced.
+
+The inflow data format that the generator needs to produce the instances is a csv file (with ”;” as separator) composed of three columns, i.e., date, hour, and inflow, respectively. An example is
+
+| Date (YYYYMMDD)| Hour | Inflow |
+|:----------|:-------:|:----------|
+| 20040401 | 1 | 2.48 |
+| 20040401 | 2 | 2.31 |
+| 20040401 | 3 | 2.17 |
+
+The date is expressed as year, month, day, i.e., **YYYYMMDD**. The second column indicates the reference time (between 1 and 24). Finally, the third column shows the inflows expressed in [m^3/s]. Additional rows can be added to the existing file with the condition of entering the data in ascending date order. Data continuity is not required.

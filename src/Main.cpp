@@ -26,7 +26,7 @@
  * @brief    :Main functions
  * @author   :Dimitri Thomopulos
  * @date     :20180730
- * @version  :1.01
+ * @version  :1.02
  */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -289,6 +289,7 @@ int main(int argc, char** argv){
 
 	int instFormat = 0;		//format of the instances
 	int instNumber = 1;	    //number of instances
+	int outExtension = 1;	//extension of the file instances
 
 	double totalInflows = 0.0; //sum over periods of the inflows
 
@@ -317,6 +318,11 @@ int main(int argc, char** argv){
 	//Selecting the format
 	cout << "Please, select the format of instances you want to create.";
 	instFormat = read_value(0, 1, instFormat);
+
+	//Selecting the extenson of the file instances
+	cout << "Please, select the extesion of the files to generate. "; 
+	cout << "O .dat; 1 .dat .csv; 2.csv.";
+	outExtension = read_value(0, 2, outExtension);
 
 	//Selecting number of instances, i.e., genereting option
 	cout << "Please, select the number of instances you want to create.";
@@ -409,10 +415,16 @@ int main(int argc, char** argv){
 		v_T_modif = read_value(v_T_modif_LB, v_T_modif_UB, v_T_modif);
 
 		cout << endl;
-
-		status = write_instance(instFormat, year, month, day, periodsNumber,
-			nOPT, &prices, &inflows, RVol, v_0_modif, v_T_modif, v_min_modif, 
-			v_max_modif);
+		if (outExtension < 2){
+			status = write_instance(instFormat, year, month, day, 
+				periodsNumber, nOPT, &prices, &inflows, RVol, v_0_modif, 
+				v_T_modif, v_min_modif, v_max_modif);
+		}
+		if (outExtension > 0){
+			status = write_csv_instance(instFormat, year, month, day, 
+				periodsNumber, nOPT, &prices, &inflows, RVol, v_0_modif, 
+				v_T_modif, v_min_modif, v_max_modif);
+		}
 		if (!status){
 			//TODO
 		}
@@ -508,9 +520,16 @@ int main(int argc, char** argv){
 
 		cout << endl;
 
-		status = write_instance(instFormat, year, month, day, periodsNumber,
-			nOPT, &prices, &inflows, RVol, v_0_modif, v_T_modif, v_min_modif,
-			v_max_modif);
+		if (outExtension < 2){
+			status = write_instance(instFormat, year, month, day,
+				periodsNumber, nOPT, &prices, &inflows, RVol, v_0_modif,
+				v_T_modif, v_min_modif, v_max_modif);
+		}
+		if (outExtension > 0){
+			status = write_csv_instance(instFormat, year, month, day, 
+				periodsNumber, nOPT, &prices, &inflows, RVol, v_0_modif, 
+				v_T_modif, v_min_modif, v_max_modif);
+		}
 		if (!status){
 			//TODO
 		}
@@ -595,9 +614,16 @@ int main(int argc, char** argv){
 			if (v_T_rand == true)
 				v_T_modif = rand_value(v_T_modif_LB, v_T_modif_UB);
 
-			status = write_instance(instFormat, year, month, day,
-				periodsNumber, nOPT, &prices, &inflows, RVol, v_0_modif,
-				v_T_modif, v_min_modif, v_max_modif);
+			if (outExtension < 2){
+				status = write_instance(instFormat, year, month, day,
+					periodsNumber, nOPT, &prices, &inflows, RVol, v_0_modif,
+					v_T_modif, v_min_modif, v_max_modif);
+			}
+			if (outExtension > 0){
+				status = write_csv_instance(instFormat, year, month, day,
+					periodsNumber, nOPT, &prices, &inflows, RVol, v_0_modif,
+					v_T_modif, v_min_modif, v_max_modif);
+			}
 			if (!status){
 				//TODO
 			}

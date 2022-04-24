@@ -26,7 +26,7 @@
  * @brief    :Functions for writing the instances
  * @author   :Dimitri Thomopulos
  * @date     :20180730
- * @version  :1.02
+ * @version  :1.03
  */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -61,6 +61,16 @@ string three_digits_string(int threeValue){
 	string str = ss.str();
 	string threeDigits = str.substr(1, 4);
 	return threeDigits;
+}
+
+//function to compleate a line  of empty colums in csv files
+int complete_csv(ofstream& printer, int remaining_cols){
+	for (int i = 0; i < remaining_cols; i++){
+		printer << ";";
+	}
+	//printer << "check;"; command to verify csv indentation
+	printer << "\n";
+	return 0;
 }
 
 
@@ -337,7 +347,7 @@ int write_instance(int instFormat, int year, int month, int day,
 			 }
 
 			 instanceGen << fixed << setprecision(2) <<
-				 (*prices)[i] << "	" <<
+				 (*inflows)[i] << "	" <<
 				 setprecision(origPrecision) << v_min << "	"
 				 << v_max << "\n";
 		 }
@@ -486,7 +496,7 @@ int write_instance(int instFormat, int year, int month, int day,
 	instanceGen << ";\n\n" <<
 		"# Q_u is the water flow corresponding to each o.p. of a pump" <<
 		" [m^3/s]\n" <<
-		"# P_u is the power produced by a pump at each o.p. [MW]\n" <<
+		"# P_u is the power consumed by a pump at each o.p. [MW]\n" <<
 		"param:					            Q_u	            P_u :=\n" <<
 		"	    1	          1	           0.00	           0.00\n" <<
 		"	    1	          2	         -26.98	         -21.40\n" <<
@@ -521,17 +531,397 @@ int write_instance(int instFormat, int year, int month, int day,
 
 	if (instFormat == 1){
 		instanceGen <<
-			"\n#t2Up is the index of the uphill reservoir associated with " <<
-			"each turbine\n#t2Dw is the index of the downhill reservoir " <<
+			"\n#t2Up is the index of the upstream reservoir associated with " <<
+			"each turbine\n#t2Dw is the index of the downstream reservoir " <<
 			"associated with each turbine.\n" <<
-			"#t2Up and t2Dw = -1 if there is not a corresponding reservoir" <<
-			"= -1 if the turbine has non corresponding pump\n"
-			"param:         	t2Up t2Dw :=\n" << "	    1	       " <<
-			"1	-1\n" << ";\n";
+			"#t2Up and t2Dw = -1 if there is not a corresponding reservoir\n" <<
+			"#tDelay is the delay [s] in flow from the upstream reservoir " <<
+			"to the corresponding downstream reservoir\n" <<
+			"#tDelay = 0 if 0 or there is not a corresponding reservoir\n" <<
+			"param:         	t2Up  t2Dw tDelay:=\n" << "	    1	       " <<
+			"1	-1	    0\n" << 
+			";\n";
 
 		//print percentage of written lines
 		if (verbose == 1)
-			print_perc(&linesCount, linesStep, 7);
+			print_perc(&linesCount, linesStep, 9);
+
+	}
+
+	instanceGen.close();
+	if (verbose == 1)
+		cout << "] 100% ***\n";
+
+	delete[] qValues;
+	delete[] jump;
+	delete[] eta;
+	for (int i = 0; i < nOPT; i++){
+		delete[] pValues[i];
+	}
+	delete[] pValues;
+	delete[] vValues;
+
+	if (verbose == 1)
+		cout << "*** Writing instance - Complete ***" << endl << endl;
+
+
+	return 0;
+}
+
+int write_csv_instance(int instFormat, int year, int month, int day,
+	int periodsNumber, int nOPT, double **prices, double **inflows, int RVol,
+	int v_0_modif, int v_T_modif, int v_min_modif, int v_max_modif){
+	stringstream sStream; //string to create the name of the file
+	string instFolder; //path/name of the folder of instances
+	int origPrecision; //variable to memorize the original output precision
+	double linesCount = 0.0001; //counter of printed lines
+	double linesStep = 0.0001; //number of lines to print a percentage after
+	int verbose = 1; // 1 to print percentage of done lines, 0 otherwise
+	int max_cols = 10;  // maximum number of csv columns
+	int temp_col = 0; //auxiliary counter of already assigned csv columns 
+
+	int v_min = v_LB + (v_min_modif * v_step);
+	int v_max = v_UB - (v_min_modif * v_step);
+	int v_0 = v_LB + (v_0_modif * v_double_step);
+	int v_T = v_LB + (v_T_modif * v_double_step);
+
+	//Creating instances folders
+	switch (instFormat)
+	{
+	case 0:
+		instFolder = "Single-reservoir_instances";
+		system("mkdir Single-reservoir_instances");
+		linesStep = (73 + periodsNumber + ((nOPT + 1)*(RVol + 1))) / 20.0;
+		break;
+	case 1:
+		instFolder = "Multi-reservoir_instances/";
+		system("mkdir Multi-reservoir_instances");
+		linesStep = int(87 + (2 * periodsNumber) + ((nOPT + 1)*(RVol + 1)))
+			/ 20.0;
+		break;
+	case 2:
+		instFolder = "Single-reservoir_periods_instances";
+		system("mkdir Single-reservoir_periods_instances");
+		linesStep = 10000;
+		break;
+	default:
+		instFolder = "Instances/";
+		break;
+	}
+
+	//Creating the name of the instance
+	if ((year - 2000) < 10){
+		sStream << instFolder << "/" << "Suviana_0" << year - 2000;
+	}
+	else{
+		sStream << instFolder << "/" << "Suviana_" << year - 2000;
+	}
+	if (month < 10){
+		sStream << "0" << month;
+	}
+	else{
+		sStream << month;
+	}
+	if (day < 10){
+		sStream << "0" << day;
+	}
+	else{
+		sStream << day;
+	}
+	sStream << "_" << periodsNumber << "_" << nOPT << "_" << RVol << "_";
+	sStream << fixed << three_digits_string(v_min_modif) << "_";
+	sStream << fixed << three_digits_string(v_max_modif) << "_";
+	sStream << fixed << three_digits_string(v_0_modif) << "_";
+	sStream << fixed << three_digits_string(v_T_modif) << ".csv";
+	string fileName = sStream.str();
+	sStream.str("");
+	cout << fileName << endl;
+	char instName[100];
+	strcpy(instName, fileName.c_str());
+
+	//Calculating the values of the instance
+	//Q_i water flow
+	double *qValues = new double[nOPT];
+	qValues[0] = 0.0;
+	for (int i = 1; i < nOPT; i++){
+		qValues[i] = 8.4 + (42 - 8.4)*(i - 1) / (nOPT - 2);
+	}
+
+	//The jump
+	double *jump = new double[RVol];
+	for (int i = 0; i < RVol; i++){
+		jump[i] = min_jump + ((max_jump - min_jump)*(i + 1)) / RVol;
+	}
+
+	//Eta values of the production function
+	double *eta = new double[nOPT - 1];
+	for (int i = 0; i < nOPT - 1; i++){
+		eta[i] = 0;
+		for (int j = 0; j < 7; j++){
+			eta[i] += coeff_eta[j] * pow(qValues[i + 1], j);
+		}
+	}
+
+	//P_ir produced power
+	double **pValues = new double*[nOPT];
+	pValues[0] = new double[RVol];
+	for (int j = 0; j < RVol; j++){
+		pValues[0][j] = 0.0;
+	}
+	for (int i = 1; i < nOPT; i++){
+		pValues[i] = new double[RVol];
+		for (int j = 0; j < RVol; j++){
+			pValues[i][j] = 9.81 / 1000 * qValues[i] * eta[i - 1] *
+				(jump[j] - (0.01 * qValues[i] * qValues[i]));
+		}
+	}
+
+	//V volumes
+	double *vValues = new double[RVol + 1];
+	vValues[0] = v_min;
+	if (RVol > 1){
+		for (int j = 0; j < RVol; j++){
+			vValues[j + 1] = ((v_max - v_min)*j / (RVol - 1)) + v_min;
+		}
+	}
+	else{
+		vValues[1] = v_max;
+	}
+
+	//Writing the instance
+	if (verbose == 1)
+		cout << "*** Writing instance            ***" << endl;
+
+	ofstream  instanceGen;
+
+	origPrecision = instanceGen.precision();
+
+	if (verbose == 1)
+		cout << "*** [";
+
+	instanceGen.open(instName, ios::trunc);
+
+	if (instFormat == 1){
+		instanceGen << "J;1;";
+		complete_csv(instanceGen, max_cols - 2);
+
+		if (verbose == 1)
+			print_perc(&linesCount, linesStep, 1);
+	}
+
+	instanceGen << "T;" << periodsNumber <<
+		";";
+	complete_csv(instanceGen, max_cols - 2);
+	
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, 1);
+
+	instanceGen <<
+		"PERIODS ";
+	if (instFormat != 1){
+		instanceGen << "inflows ";
+	}
+	instanceGen << "prices";
+	if (instFormat == 2){
+		instanceGen << " v_min v_max";
+	}
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, 1);
+
+	for (int i = 0; i < periodsNumber; i++){
+		instanceGen << ";" << i + 1 << ";";
+		if (instFormat != 1){
+			instanceGen << fixed << setprecision(2) << (*inflows)[i] << ";";
+			temp_col = 1;
+		}
+		instanceGen << fixed << setprecision(2) << (*prices)[i];
+		if (instFormat == 2){
+			instanceGen << fixed <<
+				setprecision(origPrecision) << ";" << v_min << ";" << v_max;
+			temp_col = temp_col + 2;
+		}
+
+		instanceGen << ";";
+		complete_csv(instanceGen, max_cols - 3 - temp_col);
+	}
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, periodsNumber);
+
+	instanceGen << fixed << setprecision(origPrecision);
+
+	instanceGen << "delta_t;1;";
+	complete_csv(instanceGen, max_cols - 2);
+	instanceGen << "rampup;70;";
+	complete_csv(instanceGen, max_cols - 2);
+	instanceGen << "rampdwn;70;";
+	complete_csv(instanceGen, max_cols - 2);
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, 3);
+
+	if (instFormat == 0){
+		instanceGen << "v_min;" << v_min << ";";
+		complete_csv(instanceGen, max_cols - 2);
+		instanceGen << "v_max;" << v_max << ";";
+		complete_csv(instanceGen, max_cols - 2);
+
+		//print percentage of written lines
+		if (verbose == 1)
+			print_perc(&linesCount, linesStep, 2);
+
+	}
+	if (instFormat == 1){
+		instanceGen <<
+			"RESERVOIRS inflows v_min v_max";
+		for (int i = 0; i < periodsNumber; i++){
+			if (i < 9){
+				instanceGen << fixed <<
+					";1;" << i + 1 << ";";
+			}
+			else{
+				instanceGen << fixed <<
+					";1;" << i + 1 << ";";
+			}
+
+			instanceGen << fixed << setprecision(2) <<
+				(*inflows)[i] << ";" <<
+				setprecision(origPrecision) << v_min << ";"
+				<< v_max << ";";
+			complete_csv(instanceGen, max_cols - 5);
+		}
+
+		//print percentage of written lines
+		if (verbose == 1)
+			print_perc(&linesCount, linesStep, (periodsNumber));
+	}
+
+	instanceGen << "v_0;" << v_0 << ";";
+	complete_csv(instanceGen, max_cols - 2);
+	instanceGen << "v_T;" << v_T << ";";
+	complete_csv(instanceGen, max_cols - 2);
+	instanceGen << "N_turbines;1;";
+	complete_csv(instanceGen, max_cols - 2);
+	instanceGen << "N_pumps;1;";
+	complete_csv(instanceGen, max_cols - 2);
+	instanceGen << "pump_activation_via_turbine;0;";
+	complete_csv(instanceGen, max_cols - 2);
+	instanceGen << "theta_min;0;";
+	complete_csv(instanceGen, max_cols - 2);
+	instanceGen << "s_max;0;";
+	complete_csv(instanceGen, max_cols - 2);
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, 7);
+
+	instanceGen <<
+		"TURBINES qT_0 g_0 scT nOPT q_min q_max wT_init type;" <<
+		"1;0.00;0;75.00;";
+	instanceGen << nOPT << ";" <<
+		"8.40;42.00;0.00;L;";
+	complete_csv(instanceGen, max_cols - 10);
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, 1);
+
+	instanceGen <<
+		"PUMPS qP_0 u_0 scP nOPP wP_init eP_init;" <<
+		"1;0.00;0;75.00;2;0.00;0.00;";
+	complete_csv(instanceGen, max_cols - 8);
+
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, 1);
+
+	instanceGen << "R;" << RVol << ";";
+	complete_csv(instanceGen, max_cols - 2);
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, 1);
+
+	instanceGen << "TURBINES NOPT Q_i";
+	for (int i = 0; i < nOPT; i++){
+		if (i < 9){
+			instanceGen << fixed << ";1;" << i + 1 << ";";
+		}
+		else{
+			instanceGen << fixed << ";1;" << i + 1 <<";";
+		}
+		instanceGen << fixed << setprecision(origPrecision);
+		instanceGen << fixed << setprecision(2) << qValues[i] << ";";
+		complete_csv(instanceGen, max_cols - 4);
+	}
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, (nOPT));
+
+	instanceGen << fixed << setprecision(origPrecision);
+	instanceGen << "TURBINES NOPT VOLUMES P_ir";
+	for (int k = 0; k < RVol; k++){
+		for (int i = 0; i < nOPT; i++){
+			if (i < 9){
+				instanceGen << ";1;" << i + 1 <<
+					";" << k + 1 << ";";
+			}
+			else{
+				instanceGen << ";1;" << i + 1 <<
+					";" << k + 1 << ";";
+			}
+			instanceGen << pValues[i][k] << ";";
+			complete_csv(instanceGen, max_cols - 5);
+		}
+	}
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, ((nOPT*RVol)));
+
+	instanceGen << "PUMPS NOPP Q_u P_u" <<
+		";1;1;0.00;0.00;";
+	complete_csv(instanceGen, max_cols - 5);
+	instanceGen << ";1;2;-26.98;-21.40;";
+	complete_csv(instanceGen, max_cols - 5);
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, 2);
+
+	instanceGen <<
+		"k V";
+	for (int k = 0; k < RVol + 1; k++){
+		instanceGen << fixed << ";" << k << ";" << vValues[k] << ";";
+		complete_csv(instanceGen, max_cols - 3);
+	}
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, (RVol));
+
+	instanceGen << "TURBINES t2p" << ";1;1;";
+	complete_csv(instanceGen, max_cols - 3);
+
+	//print percentage of written lines
+	if (verbose == 1)
+		print_perc(&linesCount, linesStep, 1);
+
+	if (instFormat == 1){
+		instanceGen <<
+			"RESERVOIRS t2Up t2Dw tDelay" << ";1;1;-1;0;";
+		complete_csv(instanceGen, max_cols - 5);
+
+		//print percentage of written lines
+		if (verbose == 1)
+			print_perc(&linesCount, linesStep, 1);
 
 	}
 

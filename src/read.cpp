@@ -26,7 +26,7 @@
  * @brief    :Functions for reading the data from the files
  * @author   :Dimitri Thomopulos
  * @date     :20180330
- * @version  :1.01
+ * @version  :1.02
  */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -188,6 +188,7 @@ int read_inflows(int year, int month, int day, int periodsNumber,
 	if (verbose == 1)
 		cout << "*** [";
 
+	(*totalInflows) = 0;
 	for (int i = 1; i < periodsNumber; i++){
 		in.ignore(256, '\n');
 		in >> temp_data;
@@ -283,6 +284,7 @@ int read_inflows_s(int year, int month, int day, int periodsNumber,
 	if (verbose == 1)
 		cout << "*** [";
 
+	(*totalInflows) = 0;
 	for (int i = 1; i < periodsNumber; i++){
 		in.ignore(256, '\n');
 		in >> temp_data;

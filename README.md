@@ -36,7 +36,7 @@ The generator requires price data nad inflow data. The available data go from 20
 ### Prices
 The price data format that the generator needs to generate the instances is a separate csv file for each year that user wants to use called “Anno **YYYY**.csv" where **YYYY** is the year in question, for example, “Anno 2004.csv". An example csv (with ";" as separator) is
 
-| Date (YYYYMMDD)| Hour | PUN |
+| Date (YYYYMMDD)| delta_t | PUN |
 |:----------|:-------:|:----------|
 | 20040401 | 1 | 17.45 |
 | 20040401 | 2 | 23.55 |
@@ -47,7 +47,7 @@ In the table are represented only the first 3 periods that in the case of the It
 ### Inflows 
 The inflow data format that the generator needs to produce the instances is a csv file (with ”;” as separator) composed of three columns, i.e., date, hour, and inflow, respectively. An example is
 
-| Date (YYYYMMDD)| Hour | Inflow |
+| Date (YYYYMMDD)| delta_t | Inflow |
 |:----------|:-------:|:----------|
 | 20040401 | 1 | 2.48 |
 | 20040401 | 2 | 2.31 |

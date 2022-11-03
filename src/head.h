@@ -26,7 +26,7 @@
  * @brief    :Main header linking all files
  * @author   :Dimitri Thomopulos
  * @date     :20180730
- * @version  :0.99
+ * @version  :1.00
  */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -61,8 +61,11 @@
 #include "read.h"
 #include "write_instance.h"
 
-int const v_LB = 15000000;
-int const v_UB = 33000000;
+#define MAX_RESERVOIR 4
+#define MAX_TURBINES 5
+
+int const v_LB[MAX_RESERVOIR] = { 38400000, 2500000, 100000, 15000000 };
+int const v_UB[MAX_RESERVOIR] = { 84400000, 5500000, 200000, 33000000 };
 int const v_step = 10000;
 int const v_double_step = 20000;
 

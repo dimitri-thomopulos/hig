@@ -27,7 +27,7 @@
 #description     :This script will download the prices files on a Linux O.S.  #
 #authors         :Dimitri Thomopulos, Gabriele Iommazzo                       #
 #date            :20180730                                                    #
-#version         :0.99                                                        #
+#version         :1.00                                                        #
 #usage           :Just exegute it (./getPrices)                               #
 #notes           :Remember to make it executable (run the command             #
 #                 "sudo chmod +x RUN")                                        #
@@ -82,13 +82,18 @@ else
 				do wget "http://www.mercatoelettrico.org/En/MenuBiblioteca/Documenti/Anno20$number.zip";
 			done
 
-			for x in *.zip
-				do unzip -o "$x" -d $INFDIR
-			done
+			if ! command -v unzip &> /dev/null; then
+				echo 'The command "unzip" could not be found'
+				echo "Please, extract every .zip file in folder Prices"
+			else
+				for x in *.zip
+					do unzip -o "$x" -d $INFDIR
+				done
 
-			rm *zip*
+				rm *zip*
 
-			mv $INFDIR/Anno2004.xls $INFDIR/"Anno 2004".xls
+				mv $INFDIR/Anno2004.xls $INFDIR/"Anno 2004".xls
+			fi
 		fi
 	fi
 fi

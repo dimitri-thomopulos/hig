@@ -21,7 +21,7 @@ Instructions for Linux O.S.:
 	
 	2 Execute "./getPrices.sh" ;
 	
-	3 Convert the .xls files in semicolon separated .csv files
+	3 Convert the .xls files in semicolon separated .csv files (only the sheet "prezzi-prices" is necessary)"
 	
 	4 Execute "make"
 	

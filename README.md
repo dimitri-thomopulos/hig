@@ -29,7 +29,7 @@ Instructions for Linux O.S.:
 	
 	6 Enjoy creating instances
 	
-More detailed instructions are available [here](https://github.com/dimitri-thomopulos/hig/blob/master/Instructions%20for%20using%20HIG%20genearator%20on%20Linux.pdf).
+More detailed instructions are available in this [pdf file](https://github.com/dimitri-thomopulos/hig/blob/master/Instructions%20for%20using%20HIG%20genearator%20on%20Linux.pdf).
 	
 ## Dependencies
 

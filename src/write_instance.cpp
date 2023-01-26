@@ -26,7 +26,7 @@
  * @brief    :Functions for writing the instances
  * @author   :Dimitri Thomopulos
  * @date     :20180730
- * @version  :1.06
+ * @version  :1.06.1
  */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -42,14 +42,24 @@ double const coeff_eta[7] = { 4.09863600116008, -1.25535942295343,
 0.160530264942775, -0.00976201903589132, 0.000309429429972963,
 -4.92928898248035E-06, 0.0000000311519548768 };
 
+double const coeff_k[7] = { 307.395, 0.0000388,
+		-0.00000000000437, 2.65E-19, -8.87E-27,
+		1.55E-34, -1.11E-42 };
+
+int const hTurbine = 384;
+
 double const min_jump[5] = { 268.20, 314.70, 144.00, 71.50, 38.25 };
 double const max_jump[5] = { 319.70, 375.20, 171.70, 85.25, 45.60 };
+
+double const jump_scale[5] = { 3.751, 4.401, 2.014, 1.000, 0.535 };
 
 double const min_qValues[5] = { 0.5, 21, 1.4, 8.4, 0.1 };
 double const max_qValues[5] = { 2.8, 104.6, 7, 42, 0.3 };
 
 double const scale_prod[5] = { 1, 0.433, 2.6, 1, 10 };
 double const scale_group[5] = { 2, 1, 1, 1, 2 };
+
+int const t2Up[5] = { 0, 0, 1, 3, 2 };
 
 int print_perc(double *linesCount, double linesStep, int linesAdded){ 
 	(*linesCount) += linesAdded;
@@ -124,6 +134,9 @@ int write_instance(int instFormat, int year, int month, int day,
 	int* v_max = (int*)malloc(res_number * sizeof(int));
 	int* v_0 = (int*)malloc(res_number * sizeof(int));
 	int* v_T = (int*)malloc(res_number * sizeof(int));
+
+	double* min_jump_t = (double*)malloc(res_number * sizeof(double));
+	double* max_jump_t = (double*)malloc(res_number * sizeof(double));
 
 	set_volumes(instFormat, res_number, v_min, v_max, v_0, v_T,
 		v_0_modif, v_T_modif, v_min_modif, v_max_modif);
@@ -203,7 +216,7 @@ int write_instance(int instFormat, int year, int month, int day,
 			sStream << fixed << v_min_modif[i];
 			sStream << fixed << v_max_modif[i];
 			sStream << fixed << v_0_modif[i];
-			sStream << fixed << v_T_modif[i] ;
+			sStream << fixed << v_T_modif[i];
 		}
 	}
 	sStream << ".dat";
@@ -235,18 +248,43 @@ int write_instance(int instFormat, int year, int month, int day,
 	}
 
 	//The jump
+	for (int t = 0; t < turb_number; t++){
+		if (instFormat != 2){
+			min_jump_t[t] = -hTurbine;
+			max_jump_t[t] = -hTurbine;
+		}else{
+			min_jump_t[t] = -hTurbine * jump_scale[t];
+			max_jump_t[t] = -hTurbine * jump_scale[t];
+		}
+			
+		for (int h = 0; h < 7; h++){
+			if (instFormat != 2){
+				min_jump_t[t] += (coeff_k[h] * pow((v_min[0]), h));
+				max_jump_t[t] += (coeff_k[h] * pow((v_max[0]), h));
+			}
+			else{
+				min_jump_t[t] += (coeff_k[h] * jump_scale[t] *
+					pow((v_min[t2Up[t]] * v_LB[0] / v_LB[t2Up[t]]), h));
+				max_jump_t[t] += (coeff_k[h] * jump_scale[t] *
+					pow((v_max[t2Up[t]] * v_UB[0] / v_UB[t2Up[t]]), h));
+			}
+		}
+	}
+
 	double **jump = new double*[turb_number];
 	for (int t = 0; t < turb_number; t++){
 		jump[t] = new double[RVol];
 		for (int i = 0; i < RVol; i++){
-			if (instFormat != 2){
+			/*if (instFormat != 2){
 				jump[t][i] = min_jump[3] 
 					+ ((max_jump[3] - min_jump[3])*(i + 1)) / RVol;
 			}
 			else{
 				jump[t][i] = min_jump[t] 
 					+ ((max_jump[t] - min_jump[t])*(i + 1)) / RVol;
-			}
+			}*/
+			jump[t][i] = min_jump_t[t]
+				+ ((max_jump_t[t] - min_jump_t[t])*(i + 1)) / RVol;
 		}
 	}
 
@@ -901,6 +939,9 @@ int write_csv_instance(int instFormat, int year, int month, int day,
 	int* v_0 = (int*)malloc(res_number * sizeof(int));
 	int* v_T = (int*)malloc(res_number * sizeof(int));
 
+	double* min_jump_t = (double*)malloc(res_number * sizeof(double));
+	double* max_jump_t = (double*)malloc(res_number * sizeof(double));
+
 	set_volumes(instFormat, res_number, v_min, v_max, v_0, v_T,
 		v_0_modif, v_T_modif, v_min_modif, v_max_modif);
 
@@ -1011,18 +1052,43 @@ int write_csv_instance(int instFormat, int year, int month, int day,
 	}
 
 	//The jump
+	for (int t = 0; t < turb_number; t++){
+		if (instFormat != 2){
+			min_jump_t[t] = -hTurbine;
+			max_jump_t[t] = -hTurbine;
+		}else{
+			min_jump_t[t] = -hTurbine * jump_scale[t];
+			max_jump_t[t] = -hTurbine * jump_scale[t];
+		}
+			
+		for (int h = 0; h < 7; h++){
+			if (instFormat != 2){
+				min_jump_t[t] += (coeff_k[h] * pow((v_min[0]), h));
+				max_jump_t[t] += (coeff_k[h] * pow((v_max[0]), h));
+			}
+			else{
+				min_jump_t[t] += (coeff_k[h] * jump_scale[t] *
+					pow((v_min[t2Up[t]] * v_LB[0] / v_LB[t2Up[t]]), h));
+				max_jump_t[t] += (coeff_k[h] * jump_scale[t] *
+					pow((v_max[t2Up[t]] * v_UB[0] / v_UB[t2Up[t]]), h));
+			}
+		}
+	}
+
 	double **jump = new double*[turb_number];
 	for (int t = 0; t < turb_number; t++){
 		jump[t] = new double[RVol];
 		for (int i = 0; i < RVol; i++){
-			if (instFormat != 2){
+			/*if (instFormat != 2){
 				jump[t][i] = min_jump[3] 
 					+ ((max_jump[3] - min_jump[3])*(i + 1)) / RVol;
 			}
 			else{
 				jump[t][i] = min_jump[t] 
 					+ ((max_jump[t] - min_jump[t])*(i + 1)) / RVol;
-			}
+			}*/
+			jump[t][i] = min_jump_t[t]
+				+ ((max_jump_t[t] - min_jump_t[t])*(i + 1)) / RVol;
 		}
 	}
 

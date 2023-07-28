@@ -1,4 +1,4 @@
-![HIG](https://github.com/dimitri-thomopulos/hig/assets/62555073/11b77045-fbd0-4a23-a018-429ea69840ed)
+![HIG](https://github.com/dimitri-thomopulos/hig/assets/62555073/57f38900-49cc-4b05-aefa-414ea196e550)
 
 
  HUCP Instances Generator (HIG) is a generator of instances for the Hydro Unit Commitement Problem.

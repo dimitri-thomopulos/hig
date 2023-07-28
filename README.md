@@ -30,7 +30,7 @@ Instructions for Linux O.S.:
 	
 	3 Execute "./getPrices.sh" ;
 	
-	4 Convert the .xls files in semicolon separated .csv files (only the sheet "prezzi-prices" is necessary)"
+	4 Convert the .xls files in semicolon separated .csv files (only the sheet "prezzi-prices" is necessary), replacing the obtained files with the existing ones, containing only realistic data"
 	
 	5 Execute "make"
 	

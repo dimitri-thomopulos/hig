@@ -27,8 +27,8 @@
 #description     :This script will download the prices files on a Linux O.S.  #
 #authors         :Dimitri Thomopulos, Gabriele Iommazzo                       #
 #date            :20180730                                                    #
-#version         :1.00                                                        #
-#usage           :Just exegute it (./getPrices)                               #
+#version         :1.01                                                        #
+#usage           :Just execute it (./getPrices)                               #
 #notes           :Remember to make it executable (run the command             #
 #                 "sudo chmod +x RUN")                                        #
 #bash_version    :                                                            #
@@ -48,7 +48,7 @@ if [ $1 = "-h" ] || [ $1 = "--help" ]; then
 	echo '  -h, --help     display this help and exit';
 	echo '  -v, --version  output version information and exit';
 	echo '';
-	echo 'Report getPrices bugs to thomopulos[at]lix[dot]polytechnique[dot]fr';
+	echo 'Report getPrices bugs to dimitri[dot]thomopulos[at]unipi[dot]it';
 else
 	if [ $1 = "-v" ] || [ $1 = "--version" ]; then
 		echo '';

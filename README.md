@@ -10,6 +10,7 @@ and in the right forlder the files with price data (An equivalent batch script
 for Windows will soon be available). It is sufficient to execute it, however 
 the Users should convert the excel files into semicolon separated CSV files.
 The necessary spreadsheet is "Prezzi-Prices". However, we remind you to accept the [terms of use of http://www.mercatoelettrico.org/](https://www.mercatoelettrico.org/En/Tools/Accessodati.aspx?ReturnUrl=%2fEn%2fDownload%2fDownloadDati.aspx%3fval%3dMGP_Prezzi&val=MGP_Prezzi).
+The folder named "Prices" must contain separate CSV files, each one with data separated by semicolons, all in the same folder. There should be one CSV file for each considered year, and each file should be named 'Year' year.csv. Subfolders, zip files, or Excel files are not required. In this repository, there are examples of files in the correct format. However, please note that the data provided are realistic but not real. To obtain real price data, it is necessary to download the files available on the website http://www.mercatoelettrico.org/ either directly or through the aforementioned script.
 
 ## Installation
 To install the genearator on any Linux O.S. it is sufficient to run " make ".
@@ -17,23 +18,29 @@ Then to execute it is sufficient to run " ./HIG " and follow the instructions.
 
 Instructions for Linux O.S.:
 
-	1 Execute "chmod +x getPrices.sh"
+	1 Decide if realistic data is sufficient or real data are required
 	
-	2 Execute "./getPrices.sh" ;
+		1.1 If realistic is sufficient, skip to step 4.
 	
-	3 Convert the .xls files in semicolon separated .csv files (only the sheet "prezzi-prices" is necessary)"
+		1.2 If real data is required, continue with step 2.
 	
-	4 Execute "make"
+ 	2 Execute "chmod +x getPrices.sh"
 	
-	5 Execute "./HIG"
+	3 Execute "./getPrices.sh" ;
 	
-	6 Enjoy creating instances
+	4 Convert the .xls files in semicolon separated .csv files (only the sheet "prezzi-prices" is necessary)"
+	
+	5 Execute "make"
+	
+	6 Execute "./HIG"
+	
+	7 Enjoy creating instances
 	
 More detailed instructions are available in this [pdf file](https://github.com/dimitri-thomopulos/hig/blob/master/Instructions%20for%20using%20HIG%20genearator%20on%20Linux.pdf).
 	
 ## Dependencies
 
-The generator requires price data nad inflow data. The available data go from 2004 to 2012.
+The generator requires price data and inflow data. The available data go from 2004 to 2012.
 
 ### Prices
 The price data format that the generator needs to generate the instances is a separate csv file for each year that user wants to use called “Anno **YYYY**.csv" where **YYYY** is the year in question, for example, “Anno 2004.csv". An example csv (with ";" as separator) is

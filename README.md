@@ -22,7 +22,7 @@ Instructions for Linux O.S.:
 
 	1 Decide if realistic data is sufficient or real data are required
 	
-		1.1 If realistic is sufficient, skip to step 4.
+		1.1 If realistic is sufficient, skip to step 5.
 	
 		1.2 If real data is required, continue with step 2.
 	

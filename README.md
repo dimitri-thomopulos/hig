@@ -67,7 +67,10 @@ The inflow data format that the generator needs to produce the instances is a cs
 The date is expressed as year, month, day, i.e., **YYYYMMDD**. The second column indicates the reference time (between 1 and 24). Finally, the third column shows the inflows expressed in [m^3/s]. Additional rows can be added to the existing file with the condition of entering the data in ascending date order. Data continuity is not required.
 
 ## License
-The code is free to use for non-commercial purposes. However, reference is required in case of use.
+The code and data are freely available for non-commercial use. However, if you choose to utilize them, it is necessary to provide proper attribution and reference.
 
 ## Acknowledgements
 This work was supported by a public grant as part of the Investissement d’avenir project, reference ANR-11-LABX-0056-LMH, LabEx LMH. This research benefited from the support of the FMJH Program PGMO and from the support of EDF.
+
+##  Contacts
+For any questions, concerns, or inquiries regarding this dataset or repository, please reach out to dimitri[dot]thomopulos[at]unipi[dot]it.

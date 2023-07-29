@@ -20,7 +20,7 @@ To facilitate code usage and enhance understanding of the format, this repositor
 To install the genearator on any Linux O.S. it is sufficient to run " make ".
 Then to execute it is sufficient to run " ./HIG " and follow the instructions.
 
-Instructions for Linux O.S.:
+Detailed instructions for Linux O.S.:
 
 	1 Decide if realistic data is sufficient or real data are required
 	

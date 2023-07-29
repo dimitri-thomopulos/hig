@@ -12,7 +12,9 @@ and in the right forlder the files with price data (An equivalent batch script
 for Windows will soon be available). It is sufficient to execute it, however 
 the Users should convert the excel files into semicolon separated CSV files.
 The necessary spreadsheet is "Prezzi-Prices". However, we remind you to accept the [terms of use of http://www.mercatoelettrico.org/](https://www.mercatoelettrico.org/En/Tools/Accessodati.aspx?ReturnUrl=%2fEn%2fDownload%2fDownloadDati.aspx%3fval%3dMGP_Prezzi&val=MGP_Prezzi).
-The folder named "Prices" must contain separate CSV files, each one with data separated by semicolons, all in the same folder. There should be one CSV file for each considered year, and each file should be named “Anno **YYYY**.csv" where **YYYY** is the year in question, for example, “Anno 2004.csv". Subfolders, zip files, or Excel files are not required. In this repository, there are examples of files in the correct format. However, please note that the data provided are realistic but not real. To obtain real price data, it is necessary to download the files available on the website http://www.mercatoelettrico.org/ either directly or through the aforementioned script.
+The folder named "Prices" must contain separate CSV files, each one with data separated by semicolons, all in the same folder. There should be one CSV file for each considered year, and each file should be named “Anno **YYYY**.csv" where **YYYY** is the year in question, for example, “Anno 2004.csv". Subfolders, zip files, or Excel files are not required. 
+
+To facilitate code usage and enhance understanding of the format, this repository contains examples of files in the correct format within the "Prices" folder. However, it's important to note that the provided data is **realistic** but not **real**. For actual price data, you must download the files directly from http://www.mercatoelettrico.org/ or use the script mentioned above while following the instructions below.
 
 ## Installation
 To install the genearator on any Linux O.S. it is sufficient to run " make ".
